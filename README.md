@@ -1,6 +1,6 @@
 # Academic Research MCP Server
 
-An MCP server that provides tools for searching scientific articles from ArXiv and Google Scholar with automatic ArXiv fallback for paywalled papers.
+An MCP server that provides tools for searching scientific articles from ArXiv and Google Scholar.
 
 ## Features
 
