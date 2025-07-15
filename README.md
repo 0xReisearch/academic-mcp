@@ -1,4 +1,4 @@
-# Academic Research MCP Server
+# Academic Research MCP Server - beta
 
 An MCP server that provides tools for searching scientific articles from ArXiv and Google Scholar.
 
