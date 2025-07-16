@@ -14,11 +14,13 @@
     "@types/cheerio": "^0.22.35",
     "axios": "^1.6.0",
     "cheerio": "^1.1.0",
+    "express": "^5.1.0",
     "pdf-poppler": "^0.2.1",
     "pdf2pic": "^3.2.0",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
+    "@types/express": "^5.0.3",
     "@types/node": "^20.0.0",
     "@types/xml2js": "^0.4.14",
     "typescript": "^5.8.3"

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
@@ -10,6 +10,7 @@ import {
 import { ArxivClient } from './arxiv.js';
 import { GoogleScholarClient } from './scholar.js';
 import { PDFUtils } from './pdf-utils.js';
+import express, { Request, Response } from 'express';
 
 const server = new Server(
   {
@@ -500,9 +501,48 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 });
 
 async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error('Scientific Research MCP Server running on stdio');
+  const app = express();
+  let servers: Server[] = [];
+
+  app.get("/sse", async (req: Request, res: Response) => {
+    console.log("Got new SSE connection");
+    const transport = new SSEServerTransport("/message", res);
+    const server = new Server(
+      {
+        name: "scientific-research-server",
+        version: "1.0.0",
+      },
+      {
+        capabilities: {
+          tools: {},
+        },
+      }
+    );
+    servers.push(server);
+    server.onclose = () => {
+      console.log("SSE connection closed");
+      servers = servers.filter((s) => s !== server);
+    };
+    await server.connect(transport);
+  });
+
+  app.post("/message", async (req: Request, res: Response) => {
+    console.log("Received message");
+    const sessionId = req.query.sessionId as string;
+    const transport = servers
+      .map((s) => s.transport as SSEServerTransport)
+      .find((t) => t.sessionId === sessionId);
+    if (!transport) {
+      res.status(404).send("Session not found");
+      return;
+    }
+    await transport.handlePostMessage(req, res);
+  });
+
+  const port = process.env.PORT || 8080;
+  app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}/sse`);
+  });
 }
 
 main().catch(console.error);
