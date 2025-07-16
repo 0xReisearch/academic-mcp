@@ -42,7 +42,7 @@ jobs:
       - name: Set metadata
         id: meta
         run: |
-          IMAGE=ghcr.io/0xReisearch/academic-mcp
+          IMAGE=ghcr.io/0xreisearch/academic-mcp
           TAG=latest
           echo "image=$IMAGE" >> $GITHUB_OUTPUT
           echo "tag=$TAG" >> $GITHUB_OUTPUT
