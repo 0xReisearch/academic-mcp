@@ -1,6 +1,8 @@
 # Use Node.js 20 LTS
 FROM node:20-alpine
 
+LABEL org.opencontainers.image.source https://github.com/0xReisearch/academic-mcp
+
 # Install system dependencies required for PDF processing
 RUN apk add --no-cache \
     poppler-utils \
